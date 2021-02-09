@@ -1,7 +1,8 @@
 <template>
   <div class="app__wrapper">
-    <div id="nav">
-      <template v-if="authUser">
+    <error-alert v-if="errorShow" errorText="Internal server error. Please try later"></error-alert>
+    <div class="nav">
+      <template v-if="session.user">
         <router-link to="/products">Products</router-link> |
       </template>
       <router-link to="/auth">Auth</router-link>
@@ -16,11 +17,30 @@
 <script>
 import {mapState} from 'vuex'
 
+import ErrorAlert from './components/ErrorAlert.vue'
+
 export default {
+  data(){
+    return{
+      errorShow: false
+    }
+  },
+  components:{
+    ErrorAlert
+  },
   computed:{
     ...mapState([
-      'authUser'
+      'session'
     ])
+  },
+  methods:{
+    showErrorAlert(){
+      let v = this
+      v.errorShow = true
+        setTimeout(function(){
+          v.errorShow = false
+        }, 1000)
+    },
   }
 }
 </script>
@@ -41,13 +61,18 @@ export default {
   min-height: 100vh;
 }
 
-#nav {
+.nav {
   padding: 30px;
   background-color: $primary;
+
+  min-width: 100vw;
 
   a {
     font-weight: bold;
     color: $main-text;
+    
+    margin: 0;
+    padding: 0;
 
     &.router-link-exact-active {
       color: $green;
@@ -74,4 +99,22 @@ footer{
   height: 70px;
   background-color: $primary;
 }
+
+.main-button{
+    background-color: $green;
+    border-radius: 12px;
+
+    color: white;
+
+    width: 150px;
+
+    cursor: pointer;
+
+    &:hover{
+      background-color: darken($green, 4%);
+    }
+    &:active{
+      background-color: darken($green, 10%);
+    }
+  }
 </style>
